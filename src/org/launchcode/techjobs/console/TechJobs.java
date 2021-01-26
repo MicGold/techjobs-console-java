@@ -11,7 +11,7 @@ public class TechJobs {
 
     private static Scanner in = new Scanner(System.in);
 
-    public static void main (String[] args) {
+    public static void main(String[] args) {
 
         // Initialize our field map with key/name pairs
         HashMap<String, String> columnChoices = new HashMap<>();
@@ -61,7 +61,7 @@ public class TechJobs {
                 String searchTerm = in.nextLine();
 
                 if (searchField.equals("all")) {
-                    System.out.println("Search all fields not yet implemented.");
+                    printJobs(JobData.findByValue(searchTerm));
                 } else {
                     printJobs(JobData.findByColumnAndValue(searchField, searchTerm));
                 }
@@ -103,7 +103,7 @@ public class TechJobs {
                 validChoice = true;
             }
 
-        } while(!validChoice);
+        } while (!validChoice);
 
         return choiceKeys[choiceIdx];
     }
@@ -111,6 +111,29 @@ public class TechJobs {
     // Print a list of jobs
     private static void printJobs(ArrayList<HashMap<String, String>> someJobs) {
 
-        System.out.println("printJobs is not implemented yet");
+        //check that array contains job hashmaps - if not, print "no results"
+        if(someJobs.size() >= 1){
+
+            //loop through array of hashmaps including job info
+            for (HashMap<String, String> jobMap : someJobs) {
+                //initiate string value to hold the hashmap values
+                String value;
+                //break up jobs with asterisk between
+                System.out.println("\n*****");
+
+                //loop through hashmap keys
+                for (String jobInfo : jobMap.keySet()) {
+                    //set value to current job hashmap key value
+                    value = jobMap.get(jobInfo);
+                    //print the hashmap key followed by value
+                    System.out.print(jobInfo + ": " + value + "\n");
+                }
+                System.out.println("*****");
+            }
+
+        }else{
+            //if arrayList contained no job hashmaps, print "no results"
+            System.out.println("No Results.");
+        }
     }
 }

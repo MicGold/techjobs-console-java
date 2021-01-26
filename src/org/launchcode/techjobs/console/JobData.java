@@ -10,6 +10,8 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Collections;
+import java.util.Locale;
 
 /**
  * Created by LaunchCode
@@ -36,12 +38,13 @@ public class JobData {
         ArrayList<String> values = new ArrayList<>();
 
         for (HashMap<String, String> row : allJobs) {
-            String aValue = row.get(field);
+            String aValue = row.get(field).toLowerCase();
 
-            if (!values.contains(aValue)) {
+            if (!values.contains(aValue.toLowerCase())) {
                 values.add(aValue);
             }
         }
+        Collections.sort(values);
 
         return values;
     }
@@ -51,7 +54,13 @@ public class JobData {
         // load data, if not already loaded
         loadData();
 
-        return allJobs;
+        ArrayList<HashMap<String, String>> allJobsClone = new ArrayList<HashMap<String, String>>(allJobs.size());
+
+        for(HashMap<String, String> row : allJobs){
+            allJobsClone.add((HashMap<String, String>) row.clone());
+        }
+
+        return allJobsClone;
     }
 
     /**
@@ -76,9 +85,34 @@ public class JobData {
 
             String aValue = row.get(column);
 
-            if (aValue.contains(value)) {
+            if (aValue.toLowerCase().contains(value.toLowerCase())) {
                 jobs.add(row);
             }
+        }
+
+        return jobs;
+    }
+
+    //search all columns for value
+    public static ArrayList<HashMap<String, String>> findByValue(String value){
+        // load data, if not already loaded
+        loadData();
+
+        ArrayList<HashMap<String, String>> jobs = new ArrayList<>();
+        //loop through jobs (each row of allJobs)
+        for (HashMap<String, String> row : allJobs) {
+            //loop through each column of the row, looking for searchTerm
+            for (String column : row.keySet()) {
+                String aValue = row.get(column);
+                //if the column includes the searchTerm value - add to the ArrayList jobs
+                if (aValue.toLowerCase().contains(value.toLowerCase())) {
+                    jobs.add(row);
+                    //break the loop so the same job is not added more than once if multiple columns include the searchTerm
+                    break;
+                }
+
+            }
+
         }
 
         return jobs;
